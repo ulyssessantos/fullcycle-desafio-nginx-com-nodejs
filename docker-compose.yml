@@ -1,0 +1,61 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: node
+    container_name: app
+    networks:
+      - node_nginx_net
+    volumes:
+      - ./node:/usr/src/app
+    ports:
+      - 3000:3000
+    tty: true
+    depends_on:
+      - mysql
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASS=root
+      - DB_NAME=nodedb
+
+  nginx:
+    container_name: nginx
+    build:
+      context: ./nginx
+    networks:
+      - node_nginx_net
+    volumes:
+      - ./nginx:/usr/share/nginx/html
+    ports:
+      - 8080:80
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    command: mysqld --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    restart: always
+    tty: true
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=nodedb
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - 3303:3306
+    networks:
+      - node_nginx_net
+
+networks:
+  node_nginx_net:
+    name: node_nginx_net
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.121.0.1/16
