@@ -9,6 +9,8 @@ const config = {
     database: 'nodedb'
 };
 
+var nomes = ''
+
 const mysql = require('mysql2')
 const connection = mysql.createConnection(config)
 
@@ -19,7 +21,6 @@ const sqlInsert = `INSERT INTO people(name) values('Ulysses Santos')`
 connection.query(sqlInsert)
 
 const sqlSelect = `SELECT * FROM people`
-var nomes = ''
 
 connection.query(sqlSelect, function(err, res){
     if(err) throw err
