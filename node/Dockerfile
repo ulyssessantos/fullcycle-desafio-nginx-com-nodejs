@@ -1,4 +1,4 @@
-FROM node:20
+FROM node:16
 
 WORKDIR /usr/src/app
 
@@ -11,12 +11,6 @@ RUN apt-get update \
 
 COPY ./package*.json ./server.js ./
 
-RUN rm -rf node_modules
+RUN npm install --verbose && npm start
 
-RUN rm -f package-lock.json
-
-RUN npm cache clean --force
-
-RUN npm install --verbose
-
-CMD ["npm","init"]
+COPY . .
