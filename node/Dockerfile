@@ -11,6 +11,4 @@ RUN apt-get update \
 
 COPY ./package*.json ./server.js ./
 
-RUN npm install --verbose && npm start
-
 COPY . .
